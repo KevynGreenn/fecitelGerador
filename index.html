@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cor da barra do navegador no celular -->
+    <meta name="theme-color" content="#f32f67">
+    <title>Desafios de CSS | IFMS</title>
+
+    <!-- Estilos (as fontes ficam na pasta "fontes", funciona sem internet) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!--
+    ATENCAO: alguns ids e classes continuam em ingles porque sao usados pelo
+    gerador (script.js), que nao deve ser alterado:
+    canva, challenge-number, shape-count, generated-code, preview-frame,
+    is-updating e o atributo data-action="generate".
+-->
+
+<body>
+    <!-- Envolve a pagina inteira e define as margens laterais -->
+    <div class="pagina">
+
+        <!-- ===== CABECALHO: logo da feira centralizada ===== -->
+        <header class="cabecalho">
+            <a class="marca" href="." aria-label="Feira de Ciência e Tecnologia IFMS">
+                <img class="logo-evento" src="fecitel.png" alt="FeciTEL - Feira de Ciência e Tecnologia de Três Lagoas MS">
+            </a>
+        </header>
+
+        <main>
+            <!-- ===== INTRODUCAO: titulo grande da pagina ===== -->
+            <section class="introducao" aria-labelledby="titulo-pagina">
+                <div class="sobretitulo"><span class="sobretitulo-ponto"></span> LABORATÓRIO DE INTERFACES / IFMS</div>
+                <h1 id="titulo-pagina">DESAFIOS<br><em>DE CSS</em></h1>
+                <p class="introducao-texto">Um algoritmo que cria composições visuais e escreve o CSS sozinho.</p>
+            </section>
+
+            <!-- ===== AREA DE TRABALHO: painel de controle + painel do desafio ===== -->
+            <section class="area-trabalho" aria-label="Gerador de desafios de CSS">
+
+                <!-- ----- 01 / PAINEL DE CONTROLE (coluna da esquerda) ----- -->
+                <aside class="painel-controle">
+                    <div class="rotulo-secao">01 / CONTROLE</div>
+                    <h2>GERADOR</h2>
+                    <p class="painel-descricao">A cada clique, uma nova composição é criada aleatoriamente junto com o CSS que a desenha.</p>
+
+                    <div class="divisor"></div>
+
+                    <!-- Informacoes sobre o desafio atual -->
+                    <div class="linha-status">
+                        <span>STATUS</span>
+                        <strong><i class="ponto-status"></i> <span id="texto-status">PRONTO</span></strong>
+                    </div>
+                    <div class="linha-status">
+                        <span>ELEMENTOS</span>
+                        <!-- id usado pelo gerador: quantidade de formas -->
+                        <strong id="shape-count">--</strong>
+                    </div>
+                    <div class="linha-status">
+                        <span>GERADO EM</span>
+                        <strong id="tempo-geracao">--</strong>
+                    </div>
+                    <div class="linha-status">
+                        <span>FORMATO</span>
+                        <strong>800 × 800 PX</strong>
+                    </div>
+
+                    <!-- Cores usadas no desafio (preenchidas pelo ui.js). Clicar copia o hexadecimal -->
+                    <div class="bloco-paleta">
+                        <div class="titulo-bloco"><span>PALETA</span><small id="contagem-cores">--</small></div>
+                        <ul class="paleta" id="paleta" aria-label="Cores do desafio. Clique para copiar o hexadecimal."></ul>
+                    </div>
+
+                    <!-- Botao principal: data-action="generate" e usado pelo gerador -->
+                    <button class="botao botao-principal" type="button" data-action="generate">
+                        <span class="botao-icone">+</span> GERAR NOVO DESAFIO
+                    </button>
+
+                    <!-- Opcoes para apresentar o gerador na feira -->
+                    <div class="bloco-exposicao">
+                        <div class="titulo-bloco"><span>MODO EXPOSIÇÃO</span></div>
+
+                        <!-- Gera desafios sozinho no intervalo escolhido -->
+                        <div class="linha-automatico">
+                            <button class="botao-ferramenta botao-automatico" type="button" data-ferramenta="automatico" aria-pressed="false">▶ AUTOMÁTICO</button>
+                            <select class="intervalo-automatico" id="intervalo-automatico" aria-label="Intervalo do modo automático">
+                                <option value="3000">3s</option>
+                                <option value="5000" selected>5s</option>
+                                <option value="8000">8s</option>
+                                <option value="12000">12s</option>
+                            </select>
+                        </div>
+
+                        <!-- Barra que mostra quanto falta para o proximo desafio automatico -->
+                        <div class="barra-progresso" aria-hidden="true"><span id="barra-progresso-preenchimento"></span></div>
+
+                        <!-- Liga/desliga a animacao do codigo sendo digitado -->
+                        <label class="alternador"><input type="checkbox" id="animar-codigo" checked> Animar código sendo escrito</label>
+
+                        <button class="botao-ferramenta botao-tela-cheia" type="button" data-ferramenta="tela-cheia">⛶ TELA CHEIA</button>
+                    </div>
+
+                    <!-- Lista de atalhos de teclado -->
+                    <ul class="atalhos" aria-label="Atalhos de teclado">
+                        <li><kbd>ESPAÇO</kbd> novo desafio</li>
+                        <li><kbd>A</kbd> modo automático</li>
+                        <li><kbd>F</kbd> tela cheia</li>
+                        <li><kbd>G</kbd> mostrar grade</li>
+                        <li><kbd>C</kbd> copiar CSS</li>
+                    </ul>
+                </aside>
+
+                <!-- ----- 02 / PAINEL DO DESAFIO (coluna da direita) ----- -->
+                <section class="painel-desafio" aria-label="Desafio visual">
+
+                    <!-- Linha do topo: rotulo da secao + numero do desafio -->
+                    <div class="desafio-topo">
+                        <span class="rotulo-secao">02 / DESAFIO VISUAL</span>
+                        <!-- id usado pelo gerador: numero do desafio -->
+                        <span class="numero-desafio" id="challenge-number">DESAFIO #001</span>
+                    </div>
+
+                    <div class="desafio-cabecalho">
+                        <p>Figura e código são criados na hora, a partir de divisões e cores aleatórias.</p>
+                        <div class="simbolo-codigo" aria-hidden="true">&lt; / &gt;</div>
+                    </div>
+
+                    <!-- Moldura da figura. id "preview-frame" e usado pelo gerador (animacao ao gerar) -->
+                    <div class="moldura-preview" id="preview-frame">
+                        <div class="barra-preview">
+                            <span class="rotulo-preview">PREVIEW / FIGURA GERADA</span>
+                            <!-- Mostra a posicao do mouse na escala 800x800 -->
+                            <span class="coordenadas" id="coordenadas" aria-live="off">800 × 800 px</span>
+                        </div>
+
+                        <div class="envoltorio-canvas">
+                            <!-- Canvas onde o gerador desenha a figura (id usado pelo gerador) -->
+                            <canvas id="canva" aria-label="Figura gerada aleatoriamente pelo gerador"></canvas>
+                            <!-- Grade de 100px que aparece por cima da figura -->
+                            <div class="grade-preview" aria-hidden="true"></div>
+                            <!-- Cantos decorativos -->
+                            <div class="canto canto-superior"></div>
+                            <div class="canto canto-inferior"></div>
+                        </div>
+
+                        <div class="ferramentas-preview">
+                            <button class="botao-ferramenta" type="button" data-ferramenta="grade" aria-pressed="false">GRADE 100PX <kbd>G</kbd></button>
+                            <button class="botao-ferramenta" type="button" data-ferramenta="baixar">BAIXAR PNG <span aria-hidden="true">↓</span></button>
+                        </div>
+                    </div>
+
+                    <!-- Informacoes extras abaixo da figura -->
+                    <div class="desafio-rodape">
+                        <span><b>TIPO</b> LAYOUT GEOMÉTRICO</span>
+                        <span><b>MÉTODO</b> RANDÔMICO</span>
+                        <span><b>DICA</b> passe o mouse na figura para ver as coordenadas</span>
+                    </div>
+
+                    <!-- ----- 03 / CODIGO CSS GERADO ----- -->
+                    <section class="saida-codigo" aria-labelledby="titulo-codigo">
+                        <div class="saida-codigo-cabecalho">
+                            <div>
+                                <span class="rotulo-secao">03 / RESULTADO</span>
+                                <h2 id="titulo-codigo">CSS GERADO</h2>
+                            </div>
+                            <div class="acoes-codigo">
+                                <span class="estatisticas-codigo" id="estatisticas-codigo">-- LINHAS</span>
+                                <button class="botao-ferramenta botao-ferramenta-escuro" type="button" data-ferramenta="copiar">COPIAR</button>
+                            </div>
+                        </div>
+                        <div class="corpo-codigo">
+                            <!-- id usado pelo gerador: recebe o CSS gerado -->
+                            <pre id="generated-code">Gerando código...</pre>
+                        </div>
+                    </section>
+
+                    <!-- ----- 04 / HISTORICO: miniaturas dos ultimos desafios ----- -->
+                    <div class="historico">
+                        <div class="titulo-historico">
+                            <span class="rotulo-secao">04 / HISTÓRICO</span>
+                            <small>clique para rever</small>
+                        </div>
+                        <ol class="lista-historico" id="lista-historico" aria-label="Desafios gerados anteriormente"></ol>
+                    </div>
+                </section>
+            </section>
+        </main>
+
+        <!-- ===== RODAPE ===== -->
+        <footer class="rodape">
+            <span>FEIRA DE CIÊNCIA E TECNOLOGIA - IFMS</span>
+            <span class="rodape-codigo">CSS_CHALLENGE / 2026</span>
+        </footer>
+    </div>
+
+    <!-- Aviso flutuante que aparece ao copiar/baixar -->
+    <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
+
+    <!-- Janela que abre ao clicar em um desafio do historico -->
+    <dialog class="janela-historico" id="janela-historico" aria-labelledby="janela-titulo">
+        <div class="janela-historico-topo">
+            <strong id="janela-titulo">DESAFIO</strong>
+            <button class="botao-ferramenta botao-ferramenta-escuro" type="button" data-ferramenta="fechar-janela">FECHAR ✕</button>
+        </div>
+        <div class="janela-historico-corpo">
+            <img id="janela-imagem" alt="Figura de um desafio anterior">
+            <pre id="janela-codigo"></pre>
+        </div>
+    </dialog>
+
+    <!-- script.js = gerador (nao alterar) | ui.js = melhorias de interface -->
+    <script src="script.js"></script>
+    <script src="ui.js"></script>
+</body>
+
+</html>

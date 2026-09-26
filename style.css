@@ -1,0 +1,1171 @@
+/* =========================================================
+   DESAFIOS DE CSS - FECITEL / IFMS
+   Obs.: "#canva", "#preview-frame", "#generated-code" e
+   ".is-updating" mantem o nome original porque sao usados
+   pelo gerador (script.js).
+   ========================================================= */
+
+
+/* ---------- FONTES LOCAIS (funcionam sem internet) ---------- */
+
+/* Space Grotesk: fonte dos textos. Arquivo "variavel": um so arquivo cobre os pesos 400 a 700 */
+@font-face {
+	font-family: "Space Grotesk";
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: swap;
+	src: url("fontes/space-grotesk.woff2") format("woff2");
+}
+
+/* DM Mono: fonte do codigo e dos rotulos (peso normal) */
+@font-face {
+	font-family: "DM Mono";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("fontes/dm-mono-400.woff2") format("woff2");
+}
+
+/* DM Mono: peso medio */
+@font-face {
+	font-family: "DM Mono";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("fontes/dm-mono-500.woff2") format("woff2");
+}
+
+
+/* ---------- RESET: remove margens e espacamentos padrao ---------- */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+
+/* ---------- VARIAVEIS: cores usadas em todo o site ---------- */
+:root {
+	--tinta: #151218;                    /* quase preto: textos e fundos escuros */
+	--papel: #fffaf7;                    /* branco quente: paineis claros */
+	--linha: rgba(21, 18, 24, 0.2);      /* linhas divisorias finas */
+	--rosa: #f32f67;                     /* destaque principal */
+	--laranja: #ff9a35;                  /* destaque secundario */
+	--cinza: #6c6066;                    /* textos de apoio */
+	--sombra: 0 18px 40px -22px rgba(21, 18, 24, .55);
+}
+
+
+/* ---------- BASE ---------- */
+
+/* Fundo em degrade rosa/laranja das cores da feira */
+body {
+	min-width: 320px;
+	background: linear-gradient(135deg, #df18b1 0%, #ec3370 42%, #f95720 100%) fixed;
+	color: var(--tinta);
+	font-family: "Space Grotesk", sans-serif;
+}
+
+/* Botoes herdam a fonte e a cor do texto ao redor */
+button {
+	font: inherit;
+	color: inherit;
+}
+
+/* Contorno visivel ao navegar pelo teclado (Tab) */
+button:focus-visible {
+	outline: 3px solid var(--papel);
+	outline-offset: 3px;
+}
+
+/* Dentro dos paineis claros o contorno fica rosa para aparecer */
+.painel-controle button:focus-visible,
+.moldura-preview button:focus-visible {
+	outline-color: var(--rosa);
+}
+
+/* Aparencia de "tecla" para os atalhos */
+kbd {
+	padding: 1px 5px;
+	border: 1px solid currentColor;
+	border-bottom-width: 2px;
+	border-radius: 3px;
+	font-family: "DM Mono", monospace;
+	font-size: .9em;
+	font-weight: 500;
+}
+
+/* Textos que usam a fonte monoespacada */
+.sobretitulo,
+.rotulo-secao,
+.rotulo-preview,
+.rodape-codigo {
+	font-family: "DM Mono", monospace;
+}
+
+
+/* ---------- ESTRUTURA DA PAGINA ---------- */
+
+/* Container geral com margens laterais que crescem com a tela */
+.pagina {
+	min-height: 100vh;
+	padding: 16px clamp(18px, 4vw, 64px) 12px;
+}
+
+/* Elementos que alinham itens lado a lado com espaco entre eles */
+.cabecalho,
+.rodape,
+.desafio-topo,
+.linha-status,
+.desafio-rodape {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+
+/* ---------- CABECALHO ---------- */
+
+/* Logo centralizada no topo */
+.cabecalho {
+	min-height: 50px;
+	justify-content: center;
+}
+
+.marca {
+	display: flex;
+	align-items: center;
+}
+
+.logo-evento {
+	display: block;
+	width: min(240px, 38vw);
+	height: auto;
+}
+
+
+/* ---------- INTRODUCAO (titulo grande) ---------- */
+
+.introducao {
+	max-width: 780px;
+	padding: clamp(30px, 5vw, 58px) 0 30px;
+}
+
+/* Texto pequeno acima do titulo */
+.sobretitulo {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	margin-bottom: 24px;
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: .08em;
+}
+
+/* Quadradinho antes do sobretitulo e do status */
+.sobretitulo-ponto,
+.ponto-status {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	background: var(--tinta);
+}
+
+h1 {
+	font-size: clamp(58px, 8vw, 104px);
+	font-weight: 700;
+	line-height: .77;
+	letter-spacing: -.085em;
+}
+
+/* "DE CSS" em branco */
+h1 em {
+	color: var(--papel);
+	font-style: normal;
+}
+
+.introducao-texto {
+	margin-top: 22px;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: .01em;
+}
+
+
+/* ---------- BOTOES ---------- */
+
+/* Base dos botoes grandes */
+.botao {
+	border: 0;
+	cursor: pointer;
+	font-weight: 700;
+	letter-spacing: .04em;
+	transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+/* Sobe um pouco ao passar o mouse */
+.botao:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 6px 0 rgba(21, 18, 24, .18);
+}
+
+/* Volta ao lugar ao clicar */
+.botao:active {
+	transform: translateY(0);
+	box-shadow: none;
+}
+
+/* Botao escuro "GERAR NOVO DESAFIO" */
+.botao-principal {
+	width: 100%;
+	margin-top: 22px;
+	padding: 14px 12px;
+	background: var(--tinta);
+	color: var(--papel);
+	font-size: 11px;
+}
+
+.botao-principal:hover {
+	background: #3b2938;
+}
+
+/* Sinal de "+" que gira ao passar o mouse */
+.botao-icone {
+	display: inline-block;
+	margin-right: 7px;
+	font-size: 18px;
+	line-height: 0;
+	vertical-align: -2px;
+	transition: transform .3s ease;
+}
+
+.botao-principal:hover .botao-icone {
+	transform: rotate(90deg);
+}
+
+/* Botoes pequenos com borda (grade, baixar, copiar...) */
+.botao-ferramenta {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 9px;
+	border: 1px solid var(--tinta);
+	background: transparent;
+	cursor: pointer;
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: .04em;
+	transition: background .15s ease, color .15s ease;
+}
+
+/* Fica preenchido ao passar o mouse ou quando esta ligado */
+.botao-ferramenta:hover,
+.botao-ferramenta[aria-pressed="true"] {
+	background: var(--tinta);
+	color: var(--papel);
+}
+
+.botao-ferramenta kbd {
+	padding: 0 4px;
+	font-size: 9px;
+}
+
+/* Versao clara do botao pequeno, para fundos escuros */
+.botao-ferramenta-escuro {
+	border-color: rgba(255, 250, 247, .4);
+	color: var(--papel);
+}
+
+.botao-ferramenta-escuro:hover,
+.botao-ferramenta-escuro[aria-pressed="true"] {
+	background: var(--papel);
+	color: var(--tinta);
+}
+
+
+/* ---------- AREA DE TRABALHO (duas colunas) ---------- */
+
+/* Coluna estreita (controle) + coluna larga (desafio) */
+.area-trabalho {
+	display: grid;
+	grid-template-columns: minmax(190px, 215px) minmax(0, 1fr);
+	gap: clamp(16px, 2.5vw, 30px);
+	align-items: start;
+}
+
+/* Rotulos do tipo "01 / CONTROLE" */
+.rotulo-secao {
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: .1em;
+}
+
+/* Titulos dos paineis */
+.painel-controle h2,
+.painel-desafio h2 {
+	margin-top: 17px;
+	font-size: clamp(25px, 3vw, 42px);
+	line-height: .95;
+	letter-spacing: -.06em;
+}
+
+
+/* ---------- 01 / PAINEL DE CONTROLE ---------- */
+
+/* Fica "grudado" na tela ao rolar a pagina */
+.painel-controle {
+	position: sticky;
+	top: 16px;
+	min-height: 320px;
+	max-height: calc(100vh - 32px);   /* nunca maior que a tela... */
+	overflow-y: auto;                 /* ...se passar, rola por dentro */
+	scrollbar-width: thin;
+	padding: 21px 21px 19px;
+	background: var(--papel);
+	box-shadow: var(--sombra);
+}
+
+.painel-descricao {
+	max-width: 215px;
+	margin-top: 14px;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+/* Linha horizontal fina */
+.divisor {
+	height: 1px;
+	margin: 23px 0 6px;
+	background: var(--linha);
+}
+
+/* Linhas de informacao (STATUS, ELEMENTOS...) */
+.linha-status {
+	padding: 8px 0;
+	border-bottom: 1px dashed var(--linha);
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+	letter-spacing: .04em;
+}
+
+.linha-status strong {
+	font-size: 10px;
+	font-weight: 500;
+}
+
+/* Quadradinho rosa piscando no STATUS */
+.ponto-status {
+	width: 6px;
+	height: 6px;
+	margin-right: 4px;
+	background: var(--rosa);
+	animation: pulsar 1.6s ease-in-out infinite;
+}
+
+/* Titulo pequeno dos blocos (PALETA, MODO EXPOSICAO) */
+.titulo-bloco {
+	display: flex;
+	justify-content: space-between;
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+	letter-spacing: .04em;
+}
+
+.titulo-bloco small {
+	font-size: 10px;
+	color: var(--cinza);
+}
+
+/* Paleta: grade de quadrados coloridos */
+.bloco-paleta {
+	margin-top: 14px;
+}
+
+.paleta {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(24px, 1fr));
+	gap: 6px;
+	margin-top: 9px;
+	list-style: none;
+}
+
+/* Cada cor da paleta (a cor vem da variavel --c definida no ui.js) */
+.amostra-cor {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1;
+	border: 1px solid var(--linha);
+	background: var(--c);
+	cursor: pointer;
+	transition: transform .15s ease;
+}
+
+.amostra-cor:hover {
+	transform: scale(1.15);
+}
+
+/* Bloco "MODO EXPOSICAO" */
+.bloco-exposicao {
+	margin-top: 18px;
+	padding-top: 12px;
+	border-top: 1px solid var(--linha);
+}
+
+/* Botao AUTOMATICO + seletor de intervalo lado a lado */
+.linha-automatico {
+	display: flex;
+	gap: 6px;
+	margin-top: 9px;
+}
+
+.botao-automatico {
+	flex: 1;
+	justify-content: center;
+}
+
+.intervalo-automatico {
+	padding: 0 4px;
+	border: 1px solid var(--tinta);
+	background: var(--papel);
+	color: var(--tinta);
+	cursor: pointer;
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+.intervalo-automatico:focus-visible {
+	outline: 3px solid var(--rosa);
+	outline-offset: 2px;
+}
+
+/* Barra de tempo do modo automatico (a largura e controlada pelo ui.js) */
+.barra-progresso {
+	height: 3px;
+	margin-top: 6px;
+	overflow: hidden;
+	background: var(--linha);
+}
+
+.barra-progresso span {
+	display: block;
+	height: 100%;
+	background: var(--rosa);
+	transform: scaleX(0);
+	transform-origin: left;
+}
+
+/* Caixinha "Animar codigo sendo escrito" */
+.alternador {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin-top: 10px;
+	cursor: pointer;
+	font-size: 11px;
+}
+
+.alternador input {
+	width: 14px;
+	height: 14px;
+	accent-color: var(--rosa);
+	cursor: pointer;
+}
+
+.botao-tela-cheia {
+	width: 100%;
+	margin-top: 10px;
+	justify-content: center;
+}
+
+/* Lista de atalhos de teclado */
+.atalhos {
+	display: grid;
+	gap: 6px;
+	margin-top: 14px;
+	list-style: none;
+	color: var(--cinza);
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+.atalhos kbd {
+	margin-right: 4px;
+	color: var(--tinta);
+}
+
+
+/* ---------- 02 / PAINEL DO DESAFIO ---------- */
+
+/* Grade interna: figura a esquerda e codigo a direita */
+.painel-desafio {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(250px, 1fr);
+	column-gap: 20px;
+	align-items: start;
+	min-width: 0;
+}
+
+/* Topo e cabecalho ocupam as duas colunas */
+.desafio-topo,
+.desafio-cabecalho {
+	grid-column: 1 / -1;
+}
+
+.desafio-topo {
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--linha);
+}
+
+/* Etiqueta escura "DESAFIO #001" */
+.numero-desafio {
+	padding: 4px 8px;
+	background: var(--tinta);
+	color: var(--papel);
+	font-family: "DM Mono", monospace;
+	font-size: 11px;
+	font-weight: 500;
+}
+
+.desafio-cabecalho {
+	display: flex;
+	justify-content: space-between;
+	align-items: end;
+	gap: 20px;
+	padding: 17px 0 15px;
+}
+
+.desafio-cabecalho p {
+	font-size: 12px;
+}
+
+/* Simbolo "< / >" decorativo */
+.simbolo-codigo {
+	color: var(--papel);
+	font-family: "DM Mono", monospace;
+	font-size: 40px;
+	font-weight: 500;
+	letter-spacing: -.2em;
+}
+
+
+/* ---------- MOLDURA DA FIGURA (preview) ---------- */
+
+/* Caixa branca que envolve o canvas */
+.moldura-preview {
+	position: relative;
+	grid-column: 1;
+	grid-row: 3;
+	padding: 12px 18px 14px;
+	background: var(--papel);
+	box-shadow: var(--sombra);
+}
+
+/* Linha acima da figura: rotulo + coordenadas */
+.barra-preview {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+.rotulo-preview {
+	color: rgba(21, 18, 24, .6);
+}
+
+/* Numeros com largura fixa para nao "tremer" ao mover o mouse */
+.coordenadas {
+	color: rgba(21, 18, 24, .6);
+	font-variant-numeric: tabular-nums;
+	transition: color .15s ease;
+}
+
+/* Fica rosa enquanto o mouse esta sobre a figura */
+.coordenadas.ativo {
+	color: var(--rosa);
+	font-weight: 500;
+}
+
+/* Referencia de posicao para a grade e os cantos */
+.envoltorio-canvas {
+	position: relative;
+	outline: 1px solid var(--linha);
+}
+
+/* Canvas do gerador: sempre quadrado */
+#canva {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	background: var(--papel);
+	cursor: crosshair;
+}
+
+/* Grade de 100px (8 x 8) por cima da figura; "difference" deixa as linhas visiveis em qualquer cor */
+.grade-preview {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(to right, rgba(255, 255, 255, .55) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, .55) 1px, transparent 1px);
+	background-size: 12.5% 12.5%;
+	mix-blend-mode: difference;
+	transition: opacity .2s ease;
+}
+
+/* Mostra a grade quando o botao GRADE esta ligado */
+.moldura-preview.com-grade .grade-preview {
+	opacity: 1;
+}
+
+/* Cantos decorativos em "L" */
+.canto {
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	border-color: var(--tinta);
+	border-style: solid;
+	pointer-events: none;
+}
+
+.canto-superior {
+	top: -6px;
+	left: -6px;
+	border-width: 2px 0 0 2px;
+}
+
+.canto-inferior {
+	right: -6px;
+	bottom: -6px;
+	border-width: 0 2px 2px 0;
+}
+
+/* Botoes abaixo da figura */
+.ferramentas-preview {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+/* Informacoes abaixo da moldura (TIPO, METODO, DICA) */
+.desafio-rodape {
+	grid-column: 1 / -1;
+	grid-row: 4;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	gap: 8px 22px;
+	padding-top: 15px;
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+.desafio-rodape b {
+	margin-right: 5px;
+	font-weight: 500;
+}
+
+
+/* ---------- 03 / CODIGO CSS GERADO ---------- */
+
+/* Caixa escura ao lado da figura, esticada ate a altura da moldura do desafio */
+.saida-codigo {
+	grid-column: 2;
+	grid-row: 3;
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	background: var(--tinta);
+	color: var(--papel);
+	box-shadow: 0 18px 40px -22px rgba(21, 18, 24, .7);
+}
+
+.saida-codigo-cabecalho {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 12px 20px;
+	padding: 15px 18px 12px;
+	border-bottom: 1px solid rgba(255, 250, 247, .2);
+}
+
+.saida-codigo h2 {
+	margin-top: 13px;
+	color: var(--papel);
+	font-size: clamp(23px, 3vw, 36px);
+}
+
+/* Contagem de linhas + botao COPIAR */
+.acoes-codigo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.estatisticas-codigo {
+	margin-right: 4px;
+	color: var(--laranja);
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+/* Ocupa todo o espaco que sobra abaixo do cabecalho da caixa */
+.corpo-codigo {
+	position: relative;
+	flex: 1;
+	min-height: 0;
+}
+
+/* Area do codigo com rolagem propria. Fica "solta" (absolute) para que um
+   codigo grande nao estique a caixa: quem define a altura e a figura. */
+#generated-code {
+	position: absolute;
+	inset: 0;
+	overflow: auto;
+	padding: 14px 18px 16px;
+	color: #ffd3df;
+	font-family: "DM Mono", monospace;
+	font-size: 11px;
+	line-height: 1.45;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 250, 247, .3) transparent;
+}
+
+/* Cores do codigo (as classes sao aplicadas pelo ui.js) */
+.cod-seletor {
+	color: var(--laranja);
+	font-weight: 500;
+}
+
+.cod-propriedade {
+	color: #9fd8ff;
+}
+
+.cod-valor {
+	color: #ffd3df;
+}
+
+.cod-pontuacao {
+	color: rgba(255, 250, 247, .5);
+}
+
+/* Quadradinho com a cor ao lado de cada rgb(...) */
+.cod-amostra {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	margin-right: 5px;
+	vertical-align: -1px;
+	background: var(--c);
+	outline: 1px solid rgba(255, 250, 247, .35);
+}
+
+/* Cursor piscando durante a animacao de digitacao */
+.cursor-digitacao {
+	display: inline-block;
+	width: 7px;
+	height: 1.1em;
+	margin-left: 2px;
+	vertical-align: -2px;
+	background: var(--laranja);
+	animation: piscar .7s steps(1) infinite;
+}
+
+
+/* ---------- 04 / HISTORICO ---------- */
+
+/* Faixa com miniaturas, abaixo de tudo, ocupando as duas colunas */
+.historico {
+	grid-column: 1 / -1;
+	grid-row: 5;
+	margin-top: 18px;
+	padding-top: 12px;
+	border-top: 1px solid var(--linha);
+}
+
+.titulo-historico {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	font-family: "DM Mono", monospace;
+}
+
+.titulo-historico small {
+	font-size: 10px;
+}
+
+/* Lista horizontal com rolagem lateral */
+.lista-historico {
+	display: flex;
+	gap: 10px;
+	margin-top: 10px;
+	padding-bottom: 6px;
+	overflow-x: auto;
+	list-style: none;
+	scrollbar-width: thin;
+}
+
+/* Cada miniatura clicavel */
+.item-historico {
+	display: block;
+	width: 76px;
+	padding: 4px;
+	border: 0;
+	background: var(--papel);
+	cursor: pointer;
+	transition: transform .15s ease;
+}
+
+.item-historico:hover {
+	transform: translateY(-3px);
+}
+
+.item-historico:focus-visible {
+	outline: 3px solid var(--papel);
+}
+
+/* Destaca o desafio que esta na tela */
+.item-historico.atual {
+	outline: 2px solid var(--tinta);
+	outline-offset: 2px;
+}
+
+.item-historico img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1;
+}
+
+.item-historico span {
+	display: block;
+	margin-top: 3px;
+	font-family: "DM Mono", monospace;
+	font-size: 9px;
+}
+
+/* Janela que abre ao clicar em uma miniatura */
+.janela-historico {
+	width: min(920px, calc(100vw - 32px));
+	max-height: calc(100vh - 32px);
+	margin: auto;
+	padding: 0;
+	border: 0;
+	background: var(--tinta);
+	color: var(--papel);
+}
+
+/* Fundo escurecido atras da janela */
+.janela-historico::backdrop {
+	background: rgba(21, 18, 24, .7);
+}
+
+.janela-historico-topo {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid rgba(255, 250, 247, .2);
+	font-family: "DM Mono", monospace;
+}
+
+/* Imagem a esquerda e codigo a direita */
+.janela-historico-corpo {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 16px;
+	padding: 16px;
+}
+
+.janela-historico-corpo img {
+	width: 100%;
+	aspect-ratio: 1;
+	background: var(--papel);
+}
+
+.janela-historico-corpo pre {
+	max-height: min(430px, 60vh);
+	overflow: auto;
+	color: #ffd3df;
+	font-family: "DM Mono", monospace;
+	font-size: 11px;
+	line-height: 1.45;
+	white-space: pre-wrap;
+}
+
+
+/* ---------- RODAPE ---------- */
+
+.rodape {
+	margin-top: 22px;
+	padding-top: 10px;
+	border-top: 1px solid var(--linha);
+	font-family: "DM Mono", monospace;
+	font-size: 10px;
+}
+
+
+/* ---------- AVISO FLUTUANTE ("CSS copiado", etc.) ---------- */
+
+/* Fica escondido embaixo da tela ate receber a classe "visivel" */
+.aviso {
+	position: fixed;
+	bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+	left: 50%;
+	z-index: 10;
+	padding: 10px 16px;
+	background: var(--tinta);
+	color: var(--papel);
+	font-family: "DM Mono", monospace;
+	font-size: 11px;
+	letter-spacing: .04em;
+	opacity: 0;
+	transform: translate(-50%, 12px);
+	pointer-events: none;
+	transition: opacity .2s ease, transform .2s ease;
+}
+
+.aviso.visivel {
+	opacity: 1;
+	transform: translate(-50%, 0);
+}
+
+
+/* ---------- MODO TELA CHEIA (apresentacao na feira) ---------- */
+
+/* Esconde o que nao e essencial para destacar o gerador */
+.modo-apresentacao .introducao,
+.modo-apresentacao .atalhos,
+.modo-apresentacao .rodape,
+.modo-apresentacao .desafio-cabecalho p {
+	display: none;
+}
+
+.modo-apresentacao .area-trabalho {
+	margin-top: 16px;
+}
+
+.modo-apresentacao .painel-desafio {
+	grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr);
+}
+
+/* Limita a figura para caber na altura da tela */
+.modo-apresentacao .moldura-preview {
+	max-width: 70vh;
+}
+
+/* Codigo maior para ser lido de longe */
+.modo-apresentacao #generated-code {
+	font-size: 13px;
+}
+
+
+/* ---------- ANIMACOES ---------- */
+
+/* Figura "surge" a cada novo desafio (classe .is-updating aplicada pelo gerador) */
+@keyframes aparecer {
+	from { opacity: .35; transform: scale(.985); }
+	to   { opacity: 1;   transform: scale(1); }
+}
+
+/* Ponto do status piscando suavemente */
+@keyframes pulsar {
+	50% { opacity: .35; }
+}
+
+/* Cursor de digitacao */
+@keyframes piscar {
+	50% { opacity: 0; }
+}
+
+.moldura-preview.is-updating {
+	animation: aparecer .42s ease both;
+}
+
+
+/* ---------- CELULAR (telas ate 700px) ---------- */
+@media (max-width: 700px) {
+	.pagina {
+		padding-top: 14px;
+	}
+
+	.logo-evento {
+		width: min(185px, 48vw);
+	}
+
+	.introducao {
+		padding: 48px 0 34px;
+	}
+
+	h1 {
+		font-size: clamp(62px, 20vw, 110px);
+	}
+
+	/* Colunas viram uma embaixo da outra */
+	.area-trabalho {
+		grid-template-columns: 1fr;
+		gap: 34px;
+	}
+
+	.painel-controle {
+		position: static;
+		min-height: 0;
+	}
+
+	.paleta {
+		grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+	}
+
+	/* Sem teclado no celular, entao os atalhos somem */
+	.atalhos {
+		display: none;
+	}
+
+	.botao-principal {
+		margin-top: 24px;
+	}
+
+	.painel-desafio {
+		display: block;
+	}
+
+	.moldura-preview {
+		padding: 10px 12px 12px;
+	}
+
+	.desafio-cabecalho {
+		align-items: start;
+	}
+
+	.simbolo-codigo {
+		font-size: 25px;
+	}
+
+	.saida-codigo {
+		margin-top: 22px;
+	}
+
+	.saida-codigo-cabecalho {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+
+	/* No celular a caixa fica embaixo da figura, entao ganha altura fixa */
+	.corpo-codigo {
+		height: 300px;
+	}
+
+	.janela-historico-corpo {
+		grid-template-columns: 1fr;
+	}
+
+	.rodape {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+		margin-top: 45px;
+	}
+}
+
+
+/* ---------- TELAS BAIXAS (notebooks, altura ate 800px) ---------- */
+/* Deixa tudo mais compacto para caber sem rolar */
+@media (min-width: 701px) and (max-height: 800px) {
+	.pagina {
+		padding-top: 10px;
+		padding-bottom: 8px;
+	}
+
+	.cabecalho {
+		min-height: 42px;
+	}
+
+	.introducao {
+		padding: 8px 0;
+	}
+
+	.sobretitulo {
+		margin-bottom: 9px;
+	}
+
+	h1 {
+		font-size: clamp(44px, 6vw, 64px);
+	}
+
+	.introducao-texto {
+		margin-top: 7px;
+		font-size: 11px;
+	}
+
+	/* O painel fica mais alto que a tela: sem "grudar", senao a parte de baixo some */
+	.painel-controle {
+		position: static;
+		padding: 17px 18px 15px;
+	}
+
+	.divisor {
+		margin: 17px 0 4px;
+	}
+
+	.botao-principal {
+		margin-top: 16px;
+		padding: 11px 10px;
+	}
+
+	.desafio-cabecalho {
+		padding: 7px 0;
+	}
+
+	.moldura-preview {
+		padding: 8px 11px 10px;
+	}
+
+	.barra-preview {
+		margin-bottom: 7px;
+	}
+
+	.ferramentas-preview {
+		margin-top: 8px;
+	}
+
+	.painel-desafio {
+		grid-template-columns: minmax(0, 1fr) minmax(230px, .95fr);
+		column-gap: 12px;
+	}
+
+	.saida-codigo-cabecalho {
+		padding: 6px 14px 5px;
+	}
+
+	#generated-code {
+		padding: 7px 14px 9px;
+		font-size: 10px;
+		line-height: 1.35;
+	}
+
+	.rodape {
+		display: none;
+	}
+}
+
+
+/* ---------- ACESSIBILIDADE ---------- */
+/* Desliga animacoes para quem pediu "reduzir movimento" no sistema */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
