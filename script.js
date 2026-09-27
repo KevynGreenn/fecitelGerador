@@ -1,10 +1,13 @@
 const canvas = document.getElementById("canva");
 const ctx = canvas.getContext("2d");
+// Sistema de coordenadas fixo da figura gerada (o canvas da pagina e quadrado)
+const LARGURA_BASE = 800;
+const ALTURA_BASE = 800;
 let objetosArray = [];
 let objetosArrayE = [];
-let razãoX = 1;
-let razãoY = 1;
+let objetosArrayFinal = [];
 let coresPai = [];
+let corFundo = null;
 let direction = 0;
 let quant = 0;
 let nDiv = 0;
@@ -16,26 +19,47 @@ let porcentagem = 0;
 let a = 0;
 let aleatorio = 0;
 function resizeCanvas() {
-  const scale = Math.min(window.devicePixelRatio || 1, 2);
+  const larguraVisual = canvas.clientWidth;
+  const alturaVisual = canvas.clientHeight;
+  const densidade = window.devicePixelRatio || 1;
 
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-
-  if (width <= 0 || height <= 0) {
+  if (larguraVisual <= 0 || alturaVisual <= 0) {
     return;
   }
 
-  canvas.width = width * scale;
-  canvas.height = height * scale;
+  // O bitmap interno acompanha a densidade da tela, mas os objetos continuam
+  // usando o sistema de coordenadas fixo da imagem gerada (800 x 800).
+  canvas.width = Math.round(larguraVisual * densidade);
+  canvas.height = Math.round(alturaVisual * densidade);
+  ctx.setTransform(
+    canvas.width / LARGURA_BASE,
+    0,
+    0,
+    canvas.height / ALTURA_BASE,
+    0,
+    0,
+  );
 
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  razãoX = width / 800;
-  razãoY = height / 800;
-  ctx.clearRect(0, 0, width, height);
-  geraCor();
+  if (corFundo) {
+    criarElem(0, 0, null, 800, 800, false, corFundo);
+  }
+
+  for (const objeto of objetosArrayFinal) {
+    const cor = `rgb(${objeto.color.r}, ${objeto.color.g}, ${objeto.color.b})`;
+    criarElem(
+      objeto.x,
+      objeto.y,
+      objeto.radius ?? null,
+      objeto.w ?? null,
+      objeto.h ?? null,
+      Boolean(objeto.circle),
+      cor,
+    );
+  }
 }
 
 window.addEventListener("resize", resizeCanvas);
+window.visualViewport?.addEventListener("resize", resizeCanvas);
 /* A layer serve para organizar os elementos em camadas diferentes, assim os elementos da layer 1 foram criador a partir dos 
 elementos da layer 0 */
 function EscolheLayout(layer, x, y, w, h, W, H, count, direction, layerCor) {
@@ -68,7 +92,12 @@ function EscolheLayout(layer, x, y, w, h, W, H, count, direction, layerCor) {
         w: w,
         h: H,
         count: count + 1,
-        
+        color: {
+          r: Math.floor(Math.random() * 256),
+          g: Math.floor(Math.random() * 256),
+          b: Math.floor(Math.random() * 256),
+        },
+        cortado: true,
       });
     }
   }
@@ -97,7 +126,12 @@ function EscolheLayout(layer, x, y, w, h, W, H, count, direction, layerCor) {
         w: W,
         h: h,
         count: count + 1,
-        
+        color: {
+          r: Math.floor(Math.random() * 256),
+          g: Math.floor(Math.random() * 256),
+          b: Math.floor(Math.random() * 256),
+        },
+        cortado: true,
       });
     }
   }
@@ -212,6 +246,44 @@ function VerificaDiv(layer, direction, layerCor) {
   }
 
   if (layer === 0 && ultimaVolta > 0) {
+    for (let i = 0; i < objetosArrayE.length; i++) {
+      if (objetosArrayE[i].cortado && objetosArrayE[i + 1]) {
+        confirmFilho =
+          objetosArrayE[i].x <= objetosArrayE[i + 1].x &&
+          objetosArrayE[i].x + objetosArrayE[i].w >=
+            objetosArrayE[i + 1].x + objetosArrayE[i + 1].w &&
+          objetosArrayE[i].y <= objetosArrayE[i + 1].y &&
+          objetosArrayE[i].y + objetosArrayE[i].h >=
+            objetosArrayE[i + 1].y + objetosArrayE[i + 1].h;
+
+        if (objetosArrayE[i + 1].radius) {
+          confirmFilho =
+            objetosArrayE[i].x <= objetosArrayE[i + 1].x &&
+            objetosArrayE[i].x + objetosArrayE[i].w >=
+              objetosArrayE[i + 1].x + objetosArrayE[i + 1].radius &&
+            objetosArrayE[i].y <= objetosArrayE[i + 1].y &&
+            objetosArrayE[i].y + objetosArrayE[i].h >=
+              objetosArrayE[i + 1].y + objetosArrayE[i + 1].radius;
+        }
+        console.log(confirmFilho);
+        console.log(objetosArrayE[i]);
+        console.log(objetosArrayE[i + 1]);
+        if (confirmFilho === false) {
+          AddRet(
+            layer + 1,
+            objetosArrayE[i].x,
+            objetosArrayE[i].y,
+            0,
+            0,
+            objetosArrayE[i].w,
+            objetosArrayE[i].h,
+            Math.floor(Math.random() * 3),
+            0,
+            layerCor,
+          );
+        }
+      }
+    }
     geraCor();
     console.log(objetosArrayE);
     console.log(objetosArray);
@@ -230,8 +302,7 @@ function AddRet(layer, x, y, w, h, W, H, tipoRet, verificar, layerCor) {
     tipoRet = (Math.floor(Math.random() * 3) + 3) % 4;
   }
 
-  direction = null; 
-  const ratio = W / H;
+  direction = null;
   const parentX = x;
   const parentY = y;
 
@@ -247,7 +318,6 @@ function AddRet(layer, x, y, w, h, W, H, tipoRet, verificar, layerCor) {
     aleatorio = Math.random() * 3;
     aleatorio < 1 ? color.r = (color.r + 100) % 255 : aleatorio < 2 ? color.g = (color.g + 100) % 255 : color.b = (color.b + 100) % 255;
   }
-  console.log(color)    
   switch (tipoRet) {
     // retangulo comum
     case 0:
@@ -540,20 +610,17 @@ function AddRet(layer, x, y, w, h, W, H, tipoRet, verificar, layerCor) {
 
 
 function geraCor() {
-  if (coresPai[0] && coresPai[0][0]) {
-    criarElem(0, 0, null, 800, 800, false, corParaCss(coresPai[0][0]));
-  }
   for (let i = 0; i < objetosArrayE.length; i++) {
-    if (objetosArrayE[i].color && !objetosArrayE[i].circle) {
-        criarElem(
-          objetosArrayE[i].x,
-          objetosArrayE[i].y,
-          null,
-          objetosArrayE[i].w,
-          objetosArrayE[i].h,
-          null,
-          `rgb(${objetosArrayE[i].color.r}, ${objetosArrayE[i].color.g}, ${objetosArrayE[i].color.b})`
-        );
+    if (!objetosArrayE[i].circle) {
+      criarElem(
+        objetosArrayE[i].x,
+        objetosArrayE[i].y,
+        null,
+        objetosArrayE[i].w,
+        objetosArrayE[i].h,
+        null,
+        `rgb(${objetosArrayE[i].color.r}, ${objetosArrayE[i].color.g}, ${objetosArrayE[i].color.b})`,
+      );
     } else if (objetosArrayE[i].color) {
       criarElem(
         objetosArrayE[i].x,
@@ -562,26 +629,20 @@ function geraCor() {
         null,
         null,
         true,
-        `rgb(${objetosArrayE[i].color.r}, ${objetosArrayE[i].color.g}, ${objetosArrayE[i].color.b})`
+        `rgb(${objetosArrayE[i].color.r}, ${objetosArrayE[i].color.g}, ${objetosArrayE[i].color.b})`,
       );
     }
   }
+  objetosArrayFinal.push(...objetosArrayE);
+  objetosArrayE = [];
 }
 
 function criarElem(x, y, radius, w, h, circle, cor) {
   if (!circle) {
-      x = Math.floor(x * razãoX);
-      w = Math.floor(w * razãoX);
-      y = Math.floor(y * razãoY);
-      h = Math.floor(h * razãoY);
-      ctx.beginPath();
-      ctx.fillStyle = cor;
-      ctx.fillRect(x, y, w, h);
-      
-  }else{
-    x = x * razãoX;
-    y = y * razãoY;
-    radius = radius * Math.min(razãoX, razãoY);
+    ctx.beginPath();
+    ctx.fillStyle = cor;
+    ctx.fillRect(x, y, w, h);
+  } else {
     ctx.beginPath();
     ctx.fillStyle = cor;
     ctx.arc(x + radius / 2, y + radius / 2, radius / 2, 0, Math.PI * 2);
@@ -602,7 +663,8 @@ function corParaCss(cor) {
 
 function gerarCodigo() {
   const corBase = coresPai[0][0];
-  const formasFinais = objetosArrayE.filter((objeto) => objeto.color);
+  // Mesma ordem do desenho: no CSS, os elementos seguintes ficam por cima
+  const formasFinais = objetosArrayFinal.filter((objeto) => objeto.color);
   const css = [
     '.desafio {',
     '  position: relative;',
@@ -645,15 +707,18 @@ let desafioAtual = 0;
 function gerarDesafio() {
   objetosArray = [];
   objetosArrayE = [];
+  objetosArrayFinal = [];
   coresPai = [];
   ultimaVolta = 0;
-  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  ctx.clearRect(0, 0, LARGURA_BASE, ALTURA_BASE);
 
   coresPai.push([{
     r: Math.floor(Math.random() * 256),
     g: Math.floor(Math.random() * 256),
     b: Math.floor(Math.random() * 256),
   }]);
+  corFundo = corParaCss(coresPai[0][0]);
+  criarElem(0, 0, null, 800, 800, false, corFundo);
 
   let qualLayoutPrimario = Math.floor(Math.random() * 3);
   direction = Math.floor(Math.random() * 2);
@@ -672,10 +737,10 @@ function gerarDesafio() {
     EscolheLayout(0, 0, 600, 0, 0, 800, 200, 0, direction, 0);
   }
 
-  geraCor();
+  // Cada layout primario ja desenha suas formas (geraCor) e as move para objetosArrayFinal
   desafioAtual++;
   document.getElementById("challenge-number").textContent = `DESAFIO #${String(desafioAtual).padStart(3, "0")}`;
-  document.getElementById("shape-count").textContent = String(objetosArrayE.length).padStart(2, "0");
+  document.getElementById("shape-count").textContent = String(objetosArrayFinal.length).padStart(2, "0");
   document.getElementById("generated-code").textContent = gerarCodigo();
   document.getElementById("preview-frame").classList.remove("is-updating");
   requestAnimationFrame(() => document.getElementById("preview-frame").classList.add("is-updating"));
