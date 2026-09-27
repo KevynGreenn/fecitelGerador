@@ -61,15 +61,34 @@
 /* Fundo em degrade rosa/laranja das cores da feira */
 body {
 	min-width: 320px;
-	background: linear-gradient(135deg, #df18b1 0%, #ec3370 42%, #f95720 100%) fixed;
+	background: #ec3370;
 	color: var(--tinta);
 	font-family: "Space Grotesk", sans-serif;
+	-webkit-text-size-adjust: 100%;   /* impede o celular de aumentar textos sozinho */
+}
+
+/* Degrade numa camada fixa: "background-attachment: fixed" nao funciona no iPhone */
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(135deg, #df18b1 0%, #ec3370 42%, #f95720 100%);
 }
 
 /* Botoes herdam a fonte e a cor do texto ao redor */
 button {
 	font: inherit;
 	color: inherit;
+}
+
+/* No toque: sem atraso de duplo toque e sem o flash azul/cinza */
+button,
+select,
+label,
+#canva {
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
 }
 
 /* Contorno visivel ao navegar pelo teclado (Tab) */
@@ -109,6 +128,7 @@ kbd {
 /* Container geral com margens laterais que crescem com a tela */
 .pagina {
 	min-height: 100vh;
+	min-height: 100dvh;   /* altura real no celular (desconta a barra do navegador) */
 	padding: 16px clamp(18px, 4vw, 64px) 12px;
 }
 
@@ -203,10 +223,12 @@ h1 em {
 	transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
 }
 
-/* Sobe um pouco ao passar o mouse */
-.botao:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 6px 0 rgba(21, 18, 24, .18);
+/* Sobe um pouco ao passar o mouse (so em telas com mouse: no toque o efeito "grudaria") */
+@media (hover: hover) {
+	.botao:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 6px 0 rgba(21, 18, 24, .18);
+	}
 }
 
 /* Volta ao lugar ao clicar */
@@ -225,8 +247,10 @@ h1 em {
 	font-size: 11px;
 }
 
-.botao-principal:hover {
-	background: #3b2938;
+@media (hover: hover) {
+	.botao-principal:hover {
+		background: #3b2938;
+	}
 }
 
 /* Sinal de "+" que gira ao passar o mouse */
@@ -239,8 +263,10 @@ h1 em {
 	transition: transform .3s ease;
 }
 
-.botao-principal:hover .botao-icone {
-	transform: rotate(90deg);
+@media (hover: hover) {
+	.botao-principal:hover .botao-icone {
+		transform: rotate(90deg);
+	}
 }
 
 /* Botoes pequenos com borda (grade, baixar, copiar...) */
@@ -259,11 +285,17 @@ h1 em {
 	transition: background .15s ease, color .15s ease;
 }
 
-/* Fica preenchido ao passar o mouse ou quando esta ligado */
-.botao-ferramenta:hover,
+/* Fica preenchido quando esta ligado ou ao passar o mouse */
 .botao-ferramenta[aria-pressed="true"] {
 	background: var(--tinta);
 	color: var(--papel);
+}
+
+@media (hover: hover) {
+	.botao-ferramenta:hover {
+		background: var(--tinta);
+		color: var(--papel);
+	}
 }
 
 .botao-ferramenta kbd {
@@ -277,10 +309,16 @@ h1 em {
 	color: var(--papel);
 }
 
-.botao-ferramenta-escuro:hover,
 .botao-ferramenta-escuro[aria-pressed="true"] {
 	background: var(--papel);
 	color: var(--tinta);
+}
+
+@media (hover: hover) {
+	.botao-ferramenta-escuro:hover {
+		background: var(--papel);
+		color: var(--tinta);
+	}
 }
 
 
@@ -401,8 +439,10 @@ h1 em {
 	transition: transform .15s ease;
 }
 
-.amostra-cor:hover {
-	transform: scale(1.15);
+@media (hover: hover) {
+	.amostra-cor:hover {
+		transform: scale(1.15);
+	}
 }
 
 /* Bloco "MODO EXPOSICAO" */
@@ -808,8 +848,8 @@ h1 em {
 .lista-historico {
 	display: flex;
 	gap: 10px;
-	margin-top: 10px;
-	padding-bottom: 6px;
+	margin-top: 6px;
+	padding: 5px 5px 6px;   /* espaco para o contorno do item atual nao ser cortado pela rolagem */
 	overflow-x: auto;
 	list-style: none;
 	scrollbar-width: thin;
@@ -826,8 +866,10 @@ h1 em {
 	transition: transform .15s ease;
 }
 
-.item-historico:hover {
-	transform: translateY(-3px);
+@media (hover: hover) {
+	.item-historico:hover {
+		transform: translateY(-3px);
+	}
 }
 
 .item-historico:focus-visible {
@@ -922,7 +964,10 @@ h1 em {
 	bottom: calc(20px + env(safe-area-inset-bottom, 0px));
 	left: 50%;
 	z-index: 10;
+	width: max-content;                /* sem isso o aviso encolhe para metade da tela no celular */
+	max-width: calc(100vw - 32px);
 	padding: 10px 16px;
+	text-align: center;
 	background: var(--tinta);
 	color: var(--papel);
 	font-family: "DM Mono", monospace;
@@ -1016,9 +1061,38 @@ h1 em {
 		gap: 34px;
 	}
 
+	/* Sem "grudar" e sem rolagem interna: o painel cresce junto com a pagina */
 	.painel-controle {
 		position: static;
 		min-height: 0;
+		max-height: none;
+		overflow: visible;
+	}
+
+	/* Botoes pequenos com area de toque maior */
+	.botao-ferramenta {
+		min-height: 40px;
+		padding: 8px 12px;
+		font-size: 11px;
+	}
+
+	.intervalo-automatico {
+		min-width: 64px;
+		padding: 0 8px;
+	}
+
+	.alternador {
+		min-height: 36px;
+		font-size: 12px;
+	}
+
+	.alternador input {
+		width: 18px;
+		height: 18px;
+	}
+
+	.barra-preview {
+		flex-wrap: wrap;
 	}
 
 	.paleta {
@@ -1061,12 +1135,34 @@ h1 em {
 	}
 
 	/* No celular a caixa fica embaixo da figura, entao ganha altura fixa */
+	/* "flex: none" e necessario: com "flex: 1" a altura vira 0 e o codigo vaza para fora da caixa */
 	.corpo-codigo {
+		flex: none;
 		height: 300px;
+	}
+
+	/* Janela do historico: uma coluna, e so a janela rola (nao o codigo dentro dela) */
+	.janela-historico {
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.janela-historico-topo {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		background: var(--tinta);
 	}
 
 	.janela-historico-corpo {
 		grid-template-columns: 1fr;
+		padding: 12px;
+	}
+
+	.janela-historico-corpo pre {
+		max-height: none;
+		overflow: visible;
+		overflow-wrap: anywhere;
 	}
 
 	.rodape {
@@ -1110,6 +1206,8 @@ h1 em {
 	/* O painel fica mais alto que a tela: sem "grudar", senao a parte de baixo some */
 	.painel-controle {
 		position: static;
+		max-height: none;
+		overflow: visible;
 		padding: 17px 18px 15px;
 	}
 
@@ -1155,6 +1253,34 @@ h1 em {
 
 	.rodape {
 		display: none;
+	}
+}
+
+
+/* ---------- TELAS DE TOQUE (celular/tablet, inclusive deitado) ---------- */
+.dica-toque {
+	display: none;
+}
+
+@media (hover: none) {
+	/* Sem teclado fisico: esconde as teclas de atalho */
+	.botao-ferramenta kbd,
+	.atalhos {
+		display: none;
+	}
+
+	/* Troca "passe o mouse" por "toque" */
+	.dica-mouse {
+		display: none;
+	}
+
+	.dica-toque {
+		display: inline;
+	}
+
+	/* Fonte de 16px evita o zoom automatico do iPhone ao tocar no seletor */
+	.intervalo-automatico {
+		font-size: 16px;
 	}
 }
 

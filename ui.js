@@ -319,18 +319,33 @@
   document.querySelector('[data-ferramenta="copiar"]').addEventListener("click", copiarCss);
   document.querySelector('[data-ferramenta="baixar"]').addEventListener("click", baixarPng);
 
-  // ---------- coordenadas do mouse na escala 800x800 ----------
-  canvasEl.addEventListener("mousemove", (evento) => {
+  // ---------- coordenadas do mouse/toque na escala 800x800 ----------
+  let coordenadasTimer = 0;
+
+  function mostrarCoordenadas(evento) {
+    clearTimeout(coordenadasTimer);
     const caixa = canvasEl.getBoundingClientRect();
-    const px = Math.round(((evento.clientX - caixa.left) / caixa.width) * 800);
-    const py = Math.round(((evento.clientY - caixa.top) / caixa.height) * 800);
+    const px = Math.min(800, Math.max(0, Math.round(((evento.clientX - caixa.left) / caixa.width) * 800)));
+    const py = Math.min(800, Math.max(0, Math.round(((evento.clientY - caixa.top) / caixa.height) * 800)));
     coordenadas.textContent = `X ${String(px).padStart(3, "0")} · Y ${String(py).padStart(3, "0")}`;
     coordenadas.classList.add("ativo");
-  });
-  canvasEl.addEventListener("mouseleave", () => {
+  }
+
+  function limparCoordenadas() {
     coordenadas.textContent = "800 × 800 px";
     coordenadas.classList.remove("ativo");
-  });
+  }
+
+  canvasEl.addEventListener("pointermove", mostrarCoordenadas);
+  canvasEl.addEventListener("pointerdown", mostrarCoordenadas);
+  // No toque o dedo "sai" logo ao soltar; entao mantem o valor na tela por um instante
+  const aoSair = (evento) => {
+    clearTimeout(coordenadasTimer);
+    if (evento.pointerType === "mouse") limparCoordenadas();
+    else coordenadasTimer = setTimeout(limparCoordenadas, 1500);
+  };
+  canvasEl.addEventListener("pointerleave", aoSair);
+  canvasEl.addEventListener("pointercancel", aoSair);
 
   // ---------- atalhos de teclado (o ESPACO e tratado pelo gerador) ----------
   window.addEventListener("keydown", (evento) => {
